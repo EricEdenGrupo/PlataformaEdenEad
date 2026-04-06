@@ -8,6 +8,7 @@ export type LearningCourseListItem = {
   description: string | null;
   thumbnail_url: string | null;
   status: "draft" | "published" | "archived" | null;
+  sort_order: number | null;
   created_at: string | null;
   categoryName: string | null;
   tagNames: string[];
@@ -40,9 +41,11 @@ export function useLearningCatalog() {
       const { data: courses, error: cErr } = await (supabase as any)
         .schema("catalog")
         .from("courses")
-        .select("id,category_id,title,description,thumbnail_url,status,created_at")
+        .select("id,category_id,title,description,thumbnail_url,status,sort_order,created_at")
         .eq("status", "published")
         .is("deleted_at", null)
+        .order("sort_order", { ascending: true, nullsFirst: false })
+        .order("title", { ascending: true })
         .order("created_at", { ascending: false });
 
       if (cErr) throw cErr;

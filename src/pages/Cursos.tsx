@@ -6,7 +6,6 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { useAppSearch } from "@/contexts/AppSearchContext";
 import { BookOpen, CheckCircle2, ChevronRight, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,16 +18,29 @@ const Cursos = () => {
   const cursos = useMemo(() => data?.courses ?? [], [data?.courses]);
   const completedCourseIds = useMemo(() => data?.completedCourseIds ?? [], [data?.completedCourseIds]);
   const completedSet = useMemo(() => new Set(completedCourseIds), [completedCourseIds]);
-  const { toast } = useToast();
   const { query: headerQuery, setQuery: setHeaderQuery } = useAppSearch();
 
   const [q, setQ] = useState("");
-  const [sort, setSort] = useState<"recent" | "title">("recent");
+  const [categoryId, setCategoryId] = useState<string | "all">("all");
   const [failedBannerIds, setFailedBannerIds] = useState<Record<string, boolean>>({});
+
+  const categoryOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const c of cursos) {
+      if (c.category_id && c.categoryName) map.set(c.category_id, c.categoryName);
+    }
+    return [...map.entries()]
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [cursos]);
 
   const filteredCourses = useMemo(() => {
     const effectiveQuery = (headerQuery || q).trim().toLowerCase();
     let list = cursos;
+
+    if (categoryId !== "all") {
+      list = list.filter((c) => c.category_id === categoryId);
+    }
 
     if (effectiveQuery) {
       list = list.filter((c) => {
@@ -37,12 +49,8 @@ const Cursos = () => {
       });
     }
 
-    if (sort === "title") {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
-    }
-
     return list;
-  }, [cursos, headerQuery, q, sort]);
+  }, [cursos, headerQuery, q, categoryId]);
 
   const openCourse = (courseId: string) => {
     navigate(`/cursos/${courseId}`);
@@ -125,7 +133,7 @@ const Cursos = () => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:items-center">
             <div className="relative w-full sm:w-[320px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -138,15 +146,21 @@ const Cursos = () => {
                 className="h-10 rounded-full pl-9"
               />
             </div>
-            <Select value={sort} onValueChange={(v) => setSort(v as "recent" | "title")}>
-              <SelectTrigger className="h-10 w-full sm:w-[170px] rounded-full">
-                <SelectValue placeholder="Ordenar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recent">Mais recentes</SelectItem>
-                <SelectItem value="title">Título (A-Z)</SelectItem>
-              </SelectContent>
-            </Select>
+            {categoryOptions.length > 0 ? (
+              <Select value={categoryId} onValueChange={(v) => setCategoryId(v as string | "all")}>
+                <SelectTrigger className="h-10 w-full sm:w-[200px] rounded-full">
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
+                  {categoryOptions.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id}>
+                      {opt.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : null}
           </div>
         </div>
 
