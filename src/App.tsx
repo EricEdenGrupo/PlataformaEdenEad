@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
 import Login from "./pages/Login";
 import Cadastro from "@/pages/Cadastro";
+import CadastroConfirmarEmail from "@/pages/CadastroConfirmarEmail";
 import Cursos from "./pages/Cursos";
 import Course from "./pages/Course";
 import Perfil from "./pages/Perfil";
@@ -25,6 +26,7 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/cadastro/confirmar-email" element={<CadastroConfirmarEmail />} />
             <Route path="/" element={<Navigate to="/cursos" replace />} />
             <Route
               path="/cursos"

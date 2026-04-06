@@ -12,6 +12,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 const onlyDigits = (value: string) => value.replace(/\D+/g, "");
 
+/** Celular BR: (DD) 9XXXX-XXXX — mantém a máscara enquanto digita (até 11 dígitos). */
+const maskBrazilianMobile = (raw: string) => {
+  const d = onlyDigits(raw).slice(0, 11);
+  if (d.length === 0) return "";
+  let out = `(${d.slice(0, 2)}`;
+  if (d.length <= 2) return out;
+  const rest = d.slice(2);
+  out += ") ";
+  if (rest.length <= 5) return out + rest;
+  return `${out}${rest.slice(0, 5)}-${rest.slice(5)}`;
+};
+
 const isBrazilianMobile = (raw: string) => {
   const d = onlyDigits(raw);
   // Expect DDD (2) + 9 + 8 digits = 11 digits, e.g. 11999998888
@@ -95,6 +107,13 @@ export default function Cadastro() {
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: validated.email,
         password: validated.password,
+        options: {
+          data: {
+            given_name: validated.nome,
+            family_name: validated.sobrenome,
+            phone: onlyDigits(validated.telefone),
+          },
+        },
       });
 
       if (error) {
@@ -107,12 +126,14 @@ export default function Cadastro() {
       }
 
       const newUser = signUpData.user;
-      if (!newUser) {
-        toast({
-          title: "Conta criada",
-          description: "Verifique seu email para confirmar o cadastro.",
+      const session = signUpData.session;
+      const pendingEmailConfirm = !session;
+
+      if (!newUser || pendingEmailConfirm) {
+        navigate("/cadastro/confirmar-email", {
+          replace: true,
+          state: { email: validated.email },
         });
-        navigate("/login");
         return;
       }
 
@@ -145,7 +166,7 @@ export default function Cadastro() {
         title: "Conta criada com sucesso!",
         description: "Você já pode entrar com seu email e senha.",
       });
-      navigate("/login");
+      navigate("/login", { replace: true });
     } catch (err) {
       if (err instanceof z.ZodError) {
         toast({
@@ -238,7 +259,7 @@ export default function Cadastro() {
                 type="tel"
                 placeholder="(00) 00000-0000"
                 value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
+                onChange={(e) => setTelefone(maskBrazilianMobile(e.target.value))}
                 required
                 disabled={isLoading}
                 autoComplete="tel"
