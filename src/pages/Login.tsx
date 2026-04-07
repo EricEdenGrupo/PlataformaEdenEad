@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ensureIdentityProfile } from "@/lib/identity/ensureProfile";
 import { z } from "zod";
+import { cdnPublicAsset } from "@/lib/cdn";
 
 const authSchema = z.object({
   email: z.string().email("Email inválido").max(255),
@@ -28,7 +29,9 @@ const Login = () => {
   const didSubmitLoginRef = useRef(false);
 
   const backgroundStyle = useMemo(
-    () => ({ backgroundImage: `url(${isTransitioning ? "/background.gif" : "/background.png"})` }),
+    () => ({
+      backgroundImage: `url(${cdnPublicAsset(isTransitioning ? "background.gif" : "background.png")})`,
+    }),
     [isTransitioning],
   );
 
@@ -126,7 +129,7 @@ const Login = () => {
 
     const loadGifDuration = async () => {
       try {
-        const res = await fetch("/background.gif", { cache: "force-cache" });
+        const res = await fetch(cdnPublicAsset("background.gif"), { cache: "force-cache" });
         if (!res.ok) return;
         const buf = await res.arrayBuffer();
         const ms = parseGifDurationMs(new Uint8Array(buf));
@@ -237,7 +240,7 @@ const Login = () => {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center gap-2 mb-4">
             <img
-              src="/eden-logo.png"
+              src={cdnPublicAsset("assets/eden-logo-black.png")}
               alt="Éden Educação"
               className="h-10 w-auto select-none"
               draggable={false}

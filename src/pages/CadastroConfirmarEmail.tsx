@@ -5,6 +5,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
+import { cdnPublicAsset } from "@/lib/cdn";
 
 type LocationState = { email?: string };
 
@@ -14,7 +15,10 @@ export default function CadastroConfirmarEmail() {
   const { user, isAuthorized } = useAuth();
   const email = ((location.state as LocationState | null)?.email ?? "").trim();
 
-  const backgroundStyle = useMemo(() => ({ backgroundImage: "url(/background.png)" }), []);
+  const backgroundStyle = useMemo(
+    () => ({ backgroundImage: `url(${cdnPublicAsset("background.png")})` }),
+    [],
+  );
 
   useEffect(() => {
     if (user && isAuthorized) {
@@ -40,7 +44,7 @@ export default function CadastroConfirmarEmail() {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center gap-2 mb-4">
             <img
-              src="/eden-logo.png"
+              src={cdnPublicAsset("assets/eden-logo-black.png")}
               alt="Éden Educação"
               className="h-10 w-auto select-none"
               draggable={false}

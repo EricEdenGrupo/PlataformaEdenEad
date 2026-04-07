@@ -19,6 +19,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { OnboardingSegmentationModal } from "@/components/OnboardingSegmentationModal";
 import { useKyc } from "@/hooks/learning/useKyc";
 import { useUsuario } from "@/hooks/useUsuario";
+import { cdnPublicAsset } from "@/lib/cdn";
+import { AppFooter } from "@/components/AppFooter";
 
 interface LayoutProps {
   children: ReactNode;
@@ -73,7 +75,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-3 px-4 md:px-6">
           <Link to="/cursos" className="flex items-center gap-2 shrink-0">
             <img
-              src="/eden-logo.png"
+              src={cdnPublicAsset("assets/eden-logo-black.png")}
               alt="Éden Educação"
               className="h-9 w-auto select-none"
               draggable={false}
@@ -150,6 +152,7 @@ const Layout = ({ children }: LayoutProps) => {
       </header>
 
       <main className="w-full">{children}</main>
+      <AppFooter />
       </div>
     </AppSearchProvider>
   );

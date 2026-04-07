@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { cdnPublicAsset } from "@/lib/cdn";
 
 const onlyDigits = (value: string) => value.replace(/\D+/g, "");
 
@@ -81,7 +82,10 @@ export default function Cadastro() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const backgroundStyle = useMemo(() => ({ backgroundImage: "url(/background.png)" }), []);
+  const backgroundStyle = useMemo(
+    () => ({ backgroundImage: `url(${cdnPublicAsset("background.png")})` }),
+    [],
+  );
 
   useEffect(() => {
     if (user && isAuthorized) {
@@ -201,7 +205,7 @@ export default function Cadastro() {
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center gap-2 mb-4">
             <img
-              src="/eden-logo.png"
+              src={cdnPublicAsset("assets/eden-logo-black.png")}
               alt="Éden Educação"
               className="h-10 w-auto select-none"
               draggable={false}

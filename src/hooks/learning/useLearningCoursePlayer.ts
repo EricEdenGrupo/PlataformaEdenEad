@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatLessonDuration, formatTotalDuration } from "@/lib/learning/formatDuration";
+import { cdnThumb } from "@/lib/cdn";
 
 type LessonRow = {
   id: string;
@@ -219,7 +220,7 @@ export function useLearningCoursePlayer(courseId: string | undefined) {
         title: course.title,
         description: course.description,
         shortDescription: course.short_description,
-        thumbnailUrl: course.thumbnail_url,
+        thumbnailUrl: course.thumbnail_url ? cdnThumb(course.thumbnail_url) : null,
         level: course.level,
         durationMinutes: course.duration_minutes,
         isEnrolled,

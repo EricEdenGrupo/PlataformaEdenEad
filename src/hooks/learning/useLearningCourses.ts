@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cdnThumb } from "@/lib/cdn";
 
 export type LearningCourseListItem = {
   id: string;
@@ -101,6 +102,7 @@ export function useLearningCatalog() {
 
       const list: LearningCourseListItem[] = baseList.map((course) => ({
         ...course,
+        thumbnail_url: course.thumbnail_url ? cdnThumb(course.thumbnail_url) : null,
         categoryName: course.category_id ? categoryNameById.get(course.category_id) ?? null : null,
         tagNames: tagsByCourseId.get(course.id) ?? [],
       }));

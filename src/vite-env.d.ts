@@ -7,8 +7,8 @@ interface ImportMetaEnv {
   /** Nova chave publicável (sb_publishable_...) — alternativa ao anon */
   readonly VITE_SUPABASE_PUBLISHABLE_KEY?: string;
   readonly VITE_SUPABASE_PROJECT_ID?: string;
-  /** URL base do bucket S3 (sem pasta), ex: https://bucket.s3.us-east-1.amazonaws.com */
-  readonly VITE_S3_BUCKET_BASE_URL?: string;
+  readonly VITE_MAUTIC_FORM_ACTION?: string;
+  readonly VITE_TURNSTILE_SITE_KEY?: string;
 }
 
 interface ImportMeta {

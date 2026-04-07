@@ -10,9 +10,9 @@ import { useAppSearch } from "@/contexts/AppSearchContext";
 import { BookOpen, CheckCircle2, ChevronRight, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLearningCatalog } from "@/hooks/learning/useLearningCourses";
+import { cdnBanner } from "@/lib/cdn";
 
 const Cursos = () => {
-  const s3BucketBaseUrl = (import.meta.env.VITE_S3_BUCKET_BASE_URL || "").replace(/\/+$/, "");
   const { data, isLoading, isError, error } = useLearningCatalog();
   const navigate = useNavigate();
   const cursos = useMemo(() => data?.courses ?? [], [data?.courses]);
@@ -59,12 +59,12 @@ const Cursos = () => {
   const bannerSlides = [
     {
       id: "banner-1",
-      imageUrl: `${s3BucketBaseUrl}/banners/1.jpg`,
+      imageUrl: cdnBanner("1.jpg"),
       alt: "Banner promocional 1",
     },
     {
       id: "banner-2",
-      imageUrl: `${s3BucketBaseUrl}/banners/2.jpg`,
+      imageUrl: cdnBanner("2.jpg"),
       alt: "Banner promocional 2",
     },
   ];
