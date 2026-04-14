@@ -16,7 +16,7 @@ export default function CadastroConfirmarEmail() {
   const email = ((location.state as LocationState | null)?.email ?? "").trim();
 
   const backgroundStyle = useMemo(
-    () => ({ backgroundImage: `url(${cdnPublicAsset("background.png")})` }),
+    () => ({ backgroundImage: `url(${cdnPublicAsset("assets/background.png")})` }),
     [],
   );
 

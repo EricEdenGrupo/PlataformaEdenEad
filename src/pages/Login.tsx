@@ -30,7 +30,7 @@ const Login = () => {
 
   const backgroundStyle = useMemo(
     () => ({
-      backgroundImage: `url(${cdnPublicAsset(isTransitioning ? "background.gif" : "background.png")})`,
+      backgroundImage: `url(${cdnPublicAsset(isTransitioning ? "assets/background.gif" : "assets/background.png")})`,
     }),
     [isTransitioning],
   );
@@ -129,7 +129,7 @@ const Login = () => {
 
     const loadGifDuration = async () => {
       try {
-        const res = await fetch(cdnPublicAsset("background.gif"), { cache: "force-cache" });
+        const res = await fetch(cdnPublicAsset("assets/background.gif"), { cache: "force-cache" });
         if (!res.ok) return;
         const buf = await res.arrayBuffer();
         const ms = parseGifDurationMs(new Uint8Array(buf));
@@ -284,6 +284,15 @@ const Login = () => {
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
               />
             </div>
+            <Button
+              type="button"
+              variant="link"
+              className="h-auto p-0 text-sm text-white/80 hover:text-white justify-start"
+              onClick={() => navigate("/esqueci-senha")}
+              disabled={isLoading || isTransitioning}
+            >
+              Esqueceu a senha?
+            </Button>
             <Button type="submit" className="w-full" disabled={isLoading || isTransitioning}>
               {isTransitioning ? "Carregando..." : isLoading ? "Entrando..." : "Entrar"}
             </Button>

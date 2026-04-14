@@ -83,7 +83,7 @@ export default function Cadastro() {
   const [isLoading, setIsLoading] = useState(false);
 
   const backgroundStyle = useMemo(
-    () => ({ backgroundImage: `url(${cdnPublicAsset("background.png")})` }),
+    () => ({ backgroundImage: `url(${cdnPublicAsset("assets/background.png")})` }),
     [],
   );
 
